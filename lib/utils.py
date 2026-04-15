@@ -1,4 +1,6 @@
 import anndata as ad
+from sklearn.preprocessing import StandardScaler
+from scipy import sparse
 
 
 def prepare_adata(adata: ad.AnnData, label_key: str, feature_key: str) -> tuple:
@@ -11,6 +13,13 @@ def prepare_adata(adata: ad.AnnData, label_key: str, feature_key: str) -> tuple:
                 X = X.toarray()
         else:
             X = adata.obsm[feature_key]
+        
+        ##Normalize the features
+        if isinstance(X, sparse.spmatrix):
+            X = X.toarray()
+        
+        X = StandardScaler().fit_transform(X)
+        
         
         # Get labels
         y = None
